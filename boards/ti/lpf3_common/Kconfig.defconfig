@@ -118,6 +118,14 @@ config OBJ_CORE_SEM
 config TRACING_SEMAPHORE
 		default n
 
+# These PM defaults must be guarded so that when CONFIG_PM=n (e.g. the BTP
+# tester's ti_lpf3.conf), the unconditional 'default y' does not make
+# PM_DEVICE_RUNTIME visible outside the 'if PM_DEVICE' scope defined in
+# subsys/pm/Kconfig. An unguarded 'default y' on an otherwise-invisible symbol
+# silently overrides any '=n' user assignment (kconfiglib ignores user values
+# for invisible symbols, and the default wins instead).
+if PM
+
 config PM_DEVICE_RUNTIME
 		default y
 
@@ -129,3 +137,5 @@ config PM_DEVICE_SYSTEM_MANAGED
 
 config PM_DEVICE
 		default y
+
+endif # PM
